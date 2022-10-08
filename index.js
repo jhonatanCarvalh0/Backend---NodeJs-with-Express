@@ -1,7 +1,10 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 const port = 3000;
+
+app.use(bodyParser.json());
 
 // TEST ROUTE
 app.get('/', (req, res) => {
@@ -24,15 +27,26 @@ CRUD: Crete, Read (Single & All), Update adn Delete
 
 const messages = ['This is the first message!', 'This is the second message!'];
 
+// [GET] (All) - List all the messages
 app.get('/messages', (req, res) => {
     res.send(messages);
 });
 
+// [GET] (Single) - List a especific message
 app.get('/messages/:id', (req, res) => {
     const { id } = req.params;
     const idFix = id - 1;
     const message = messages[idFix];
     res.send(message);
+});
+
+// [POST] - Create a new message
+app.post('/messages', (req, res) => {
+    const { message } = req.body;
+
+    messages.push(message);
+    res.send("Message created with success: " + message + ".");
+
 });
 
 /* PORT LISTENDED */
