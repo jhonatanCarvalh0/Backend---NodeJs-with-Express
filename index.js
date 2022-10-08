@@ -45,8 +45,7 @@ app.post('/messages', (req, res) => {
     const { message } = req.body;
 
     messages.push(message);
-    res.send("Message created with success: " + message + ".");
-
+    res.send(`Message created with success: ${message}.`);
 });
 
 /* PORT LISTENDED */
