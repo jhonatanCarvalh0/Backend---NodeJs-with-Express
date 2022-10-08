@@ -32,7 +32,7 @@ app.get('/messages', (req, res) => {
     res.send(messages);
 });
 
-// [GET] (Single) - List a especific message
+// [GET] (Single) - List a especific message by ID
 app.get('/messages/:id', (req, res) => {
     const { id } = req.params;
     const idFix = id - 1;
@@ -46,6 +46,22 @@ app.post('/messages', (req, res) => {
 
     messages.push(message);
     res.send(`Message created with success: ${message}.`);
+});
+
+// [PUT] - Update a especifi message by ID
+app.put('/messages/:id', (req, res) => {
+    const { id } = req.params;
+    const idFix = id - 1;
+
+    const { newMessage } = req.body;
+ messages[idFix] = newMessage;
+    
+    const oldMessage = messages[idFix];
+
+   
+    res.send(
+        `[PUT] Update test: id = ${id}, message = {${oldMessage}} updated to {${newMessage}}`,
+    );
 });
 
 /* PORT LISTENDED */
