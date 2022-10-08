@@ -29,7 +29,7 @@ const messages = ['This is the first message!', 'This is the second message!'];
 
 // [GET] (All) - List all the messages
 app.get('/messages', (req, res) => {
-    res.send(messages);
+    res.send(messages.filter(Boolean));
 });
 
 // [GET] (Single) - List a especific message by ID
@@ -48,19 +48,33 @@ app.post('/messages', (req, res) => {
     res.send(`Message created with success: ${message}.`);
 });
 
-// [PUT] - Update a especifi message by ID
+// [PUT] - Update a especific message by ID
 app.put('/messages/:id', (req, res) => {
     const { id } = req.params;
     const idFix = id - 1;
 
     const { newMessage } = req.body;
- messages[idFix] = newMessage;
-    
+    messages[idFix] = newMessage;
+
     const oldMessage = messages[idFix];
 
-   
     res.send(
-        `[PUT] Update test: id = ${id}, message = {${oldMessage}} updated to {${newMessage}}`,
+        `[PUT] Update test: index = ${idFix}, message = {${oldMessage}} updated to {${newMessage}}`,
+    );
+});
+
+// [DELETE] - Delete a especific message by ID
+app.delete('/messages/:id', (req, res) => {
+    const { id } = req.params;
+    const idFix = id - 1;
+
+    const oldMessage = messages[idFix];
+
+    // messages.splice(idFix, 1);   // remove from array
+    delete messages[id]; // change for null
+
+    res.send(
+        `[DELETE] Delete test: index = ${idFix}, message = {${oldMessage}} removed!`,
     );
 });
 
