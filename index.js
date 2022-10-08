@@ -29,7 +29,7 @@ const messages = ['This is the first message!', 'This is the second message!'];
 
 // [GET] (All) - List all the messages
 app.get('/messages', (req, res) => {
-    res.send(messages.filter(Boolean));
+    res.send(messages.filter(Boolean)); // doesn't show null
 });
 
 // [GET] (Single) - List a especific message by ID
