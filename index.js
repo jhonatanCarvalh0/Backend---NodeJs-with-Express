@@ -25,7 +25,16 @@ CRUD: Crete, Read (Single & All), Update adn Delete
 
 /* ENDPOINTS/ROUTES */
 
-const messages = ['This is the first message!', 'This is the second message!'];
+const messages = [
+    {
+        id: 1,
+        text: 'This is the first message!',
+    },
+    {
+        id: 2,
+        text: 'This is the second message!',
+    },
+];
 
 // [GET] (All) - List all the messages
 app.get('/messages', (req, res) => {
@@ -35,46 +44,86 @@ app.get('/messages', (req, res) => {
 // [GET] (Single) - List a especific message by ID
 app.get('/messages/:id', (req, res) => {
     const { id } = req.params;
-    const idFix = id - 1;
-    const message = messages[idFix];
-    res.send(message);
+    const message = messages[id - 1];
+
+    if (!message) {
+        res.status(404).send('Message not found!');
+        return;
+    }
+
+    res.send(message.text);
 });
 
 // [POST] - Create a new message
 app.post('/messages', (req, res) => {
-    const { message } = req.body;
+    const message = req.body;
+
+    if (!message || !message.text) {
+        res.status(400).send(
+            'Create Failed! Please check if {text} exists and is not empty and try again!',
+        );
+        return;
+    }
+
+    const id = messages.length + 1;
+    message.id = id;
 
     messages.push(message);
-    res.send(`Message created with success: ${message}.`);
+    res.send(`Message created with success: ${message.text}`);
 });
 
 // [PUT] - Update a especific message by ID
 app.put('/messages/:id', (req, res) => {
+    // GET: message by id who wants to update!
     const { id } = req.params;
-    const idFix = id - 1;
+    const message = messages[id - 1];
 
-    const { newMessage } = req.body;
-    messages[idFix] = newMessage;
+    // VALIDATION
 
-    const oldMessage = messages[idFix];
+    if (id > messages.length) {
+        res.status(404).send('Message not found! Update Failed!');
+        return;
+    }
+
+    if (!req.body.newText) {
+        res.status(400).send(
+            'Update failed! Please check that {newText} exists and is not empty and try again!',
+        );
+        return;
+    }
+
+    // Get the new text from REQUEST BODY
+    const { newText } = req.body;
+
+    // UPDATE MESSAGE
+    const oldText = message.text;
+    message.text = newText;
 
     res.send(
-        `[PUT] Update test: index = ${idFix}, message = {${oldMessage}} updated to {${newMessage}}`,
+        `[PUT] Update test: index = ${message.id}, message = {${oldText}} updated to {${newText}}`,
     );
 });
 
 // [DELETE] - Delete a especific message by ID
 app.delete('/messages/:id', (req, res) => {
     const { id } = req.params;
-    const idFix = id - 1;
+    const message = messages[id - 1];
+    const oldMessage = message.text;
 
-    const oldMessage = messages[idFix];
+    // VALIDATION
+    if (id > messages.length) {
+        res.status(404).send('Message not found! Delete failed!');
+        return;
+    }
 
-    // messages.splice(idFix, 1);   // remove from array
-    delete messages[id]; // change for null
+    // DELETE MESSAGE
+    /* messages.splice(id - 1, 1);   // remove from array */
+
+    // DELETE MESSAGE
+    delete messages[id - 1]; // change for null
 
     res.send(
-        `[DELETE] Delete test: index = ${idFix}, message = {${oldMessage}} removed!`,
+        `[DELETE] Delete test: index = ${message.id}, message = {${oldMessage}} removed!`,
     );
 });
 
